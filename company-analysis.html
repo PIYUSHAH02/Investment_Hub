@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Analysis - INVESTMENT HUB</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <!-- Header and Navigation -->
+        <nav class="nav-extended pink accent-1">
+          <div class="nav-wrapper">
+            <a href="#" class="brand-logo center">INVESTMENT HUB</a>
+          </div>
+          <div class="nav-content">
+            <ul class="tabs tabs-transparent">
+              <li class="tab"><a href="#data-analysis">COMPANY ANALYSIS</a></li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <h2>Company Analysis</h2>
+                <p>Analyze a company's financial health using fundamental ratios:</p>
+
+                <div id="input-options">
+                    <p>
+                      <label>
+                        <input name="input-option" type="radio" value="manual" class="with-gap" />
+                        <span>Enter values manually</span>
+                      </label>
+                    </p>
+                    <p>
+                      <label>
+                        <input name="input-option" type="radio" value="upload" class="with-gap" />
+                        <span>Upload balance sheet</span>
+                      </label>
+                    </p>
+                </div>
+                <div id="manual-input" class="input-container">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <select id="ratio-select">
+                                <option value="" disabled selected>Choose a ratio</option>
+                                <option value="netProfitMargin">Net Profit Margin</option>
+                                <option value="earningsPerShare">Earnings per Share (EPS)</option>
+                                <option value="returnOnEquity">Return on Equity (ROE)</option>
+                                <option value="returnOnAsset">Return on Asset (ROA)</option>
+                            </select>
+                            <label>Select a ratio to analyze</label>
+                        </div>
+                    </div>
+                    <div id="ratio-inputs"></div>
+                </div>
+                <div id="upload-input" class="input-container" style="display: none;">
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>File</span>
+                            <input type="file" id="balance-sheet-file" accept=".pdf,.xls,.xlsx">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload balance sheet file">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn waves-effect waves-light" onclick="analyzeCompany()">Analyze</button>
+                <div id="company-analysis-result" class="card">
+                    <div class="card-content">
+                        <span class="card-title">Analysis Result</span>
+                        <!-- Display analysis result here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="page-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col l6 s12">
+              <h5 class="white-text">INVESTMENT HUB</h5>
+              <p class="grey-text text-lighten-4">Your trusted source for financial analysis.</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+              <h5 class="white-text">Links</h5>
+              <ul>
+                <li><a class="grey-text text-lighten-3" href="http://127.0.0.1:5500/Html%20final%20task/index.html">Home</a></li>                
+                <li><a class="grey-text text-lighten-3" href="http://127.0.0.1:5500/Html%20final%20task/npv-calculation.html">NPV CALCULATOR</a></li>
+                <li><a class="grey-text text-lighten-3" href="http://127.0.0.1:5500/Html%20final%20task/data-analysis.html">DATA ANALYSIS</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          <div class="container">
+            ©  230817_PUSHKAR_SHAH_TECHNICAL_TASK(4).
+          </div>
+        </div>
+      </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems, {});
+
+            // Handle input option change
+            var inputOptions = document.querySelectorAll('input[name="input-option"]');
+            var manualInput = document.getElementById('manual-input');
+            var uploadInput = document.getElementById('upload-input');
+            var ratioSelect = document.getElementById('ratio-select');
+            var ratioInputs = document.getElementById('ratio-inputs');
+
+            inputOptions.forEach(function(option) {
+                option.addEventListener('change', function() {
+                    if (this.value === 'manual') {
+                        manualInput.style.display = 'block';
+                        uploadInput.style.display = 'none';
+                        M.FormSelect.init(ratioSelect);
+                    } else {
+                        manualInput.style.display = 'none';
+                        uploadInput.style.display = 'block';
+                        ratioInputs.innerHTML = '';
+                    }
+                });
+            });
+
+            ratioSelect.addEventListener('change', function() {
+                ratioInputs.innerHTML = '';
+                switch (this.value) {
+                    case 'netProfitMargin':
+                        ratioInputs.innerHTML = `
+                            <div class="row">
+                                <div class="input-field col s6">
+                                    <input type="number" id="net-income" placeholder="Enter Net Income">
+                                    <label for="net-income">Net Income</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <input type="number" id="sales-revenue" placeholder="Enter Sales Revenue">
+                                    <label for="sales-revenue">Sales Revenue</label>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'earningsPerShare':
+                        ratioInputs.innerHTML = `
+                            <div class="row">
+                                <div class="input-field col s6">
+                                    <input type="number" id="eps-net-income" placeholder="Enter Net Income">
+                                    <label for="eps-net-income">Net Income</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <input type="number" id="shares-outstanding" placeholder="Enter Number of Shares Outstanding">
+                                    <label for="shares-outstanding">Number of Shares Outstanding</label>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'returnOnEquity':
+                        ratioInputs.innerHTML = `
+                            <div class="row">
+                                <div class="input-field col s6">
+                                    <input type="number" id="roe-net-income" placeholder="Enter Net Income">
+                                    <label for="roe-net-income">Net Income</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <input type="number" id="shareholders-equity" placeholder="Enter Shareholders' Equity">
+                                    <label for="shareholders-equity">Shareholders' Equity</label>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'returnOnAsset':
+                        ratioInputs.innerHTML = `
+                            <div class="row">
+                                <div class="input-field col s6">
+                                    <input type="number" id="roa-net-income" placeholder="Enter Net Income">
+                                    <label for="roa-net-income">Net Income</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <input type="number" id="total-assets" placeholder="Enter Total Assets">
+                                    <label for="total-assets">Total Assets</label>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    default:
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
